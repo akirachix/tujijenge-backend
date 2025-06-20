@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'payments',
     'users',
     'stock',
-
 ]
 
 MIDDLEWARE = [
@@ -83,8 +83,6 @@ DATABASES = {
         'PORT' : '5432',
         'USER':'postgres.creibsbzmowhdoweorps',
         'PASSWORD' : 'funchixkre#'
-
-      
     }
 }
 
