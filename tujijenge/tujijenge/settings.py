@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'communities'
+    'communities',
+    'payments',
+    'users',
+    'stock'
 ]
 
 MIDDLEWARE = [
@@ -83,6 +86,7 @@ DATABASES = {
         'PASSWORD' : 'funchixkre#'
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
