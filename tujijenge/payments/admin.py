@@ -5,4 +5,4 @@ admin.site.register(Payment)
 
 from .models import Order
 admin.site.register(Order)
-# Register your models here.
+
