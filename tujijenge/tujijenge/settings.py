@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
     'stock',
+
 ]
 
 MIDDLEWARE = [
@@ -82,6 +84,7 @@ DATABASES = {
         'USER':'postgres.creibsbzmowhdoweorps',
         'PASSWORD' : 'funchixkre#'
 
+      
     }
 }
 
