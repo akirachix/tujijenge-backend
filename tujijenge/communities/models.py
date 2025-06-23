@@ -1,7 +1,6 @@
 from django.db import models
 
-class Mamamboga(models.Model):
-    mamamboga_id = models.CharField(max_length=5, primary_key=True)
+
 class Community(models.Model):
    
    community_id = models.CharField(max_length=5, primary_key=True)
@@ -10,7 +9,7 @@ class Community(models.Model):
    latitude = models.FloatField(null=True, blank=True)
    longitude = models.FloatField(null=True, blank=True)
    created_by = models.ForeignKey(
-       Mamamboga,
+       "users.Mamamboga",
        on_delete=models.CASCADE,
        related_name='communities_created'
    )
@@ -23,7 +22,7 @@ class CommunityMembers(models.Model):
   
    membership_id = models.CharField(max_length=5, primary_key=True)
    mamamboga = models.ForeignKey(
-       Mamamboga,
+       "users.Mamamboga",
        on_delete=models.CASCADE,
        related_name='community_memberships'
    )
@@ -69,7 +68,7 @@ class TrainingRegistration(models.Model):
        related_name='training_registrations'
    )
    mamamboga = models.ForeignKey(
-       Mamamboga,
+       "users.Mamamboga",
        on_delete=models.CASCADE,
        related_name='training_registrations'
    )

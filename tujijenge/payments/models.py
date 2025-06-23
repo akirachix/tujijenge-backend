@@ -1,31 +1,21 @@
 from django.db import models
 
-class Community(models.Model):
-   community_id = models.CharField(max_length=5, primary_key=True)
 
-class Mamamboga(models.Model):
-    mamamboga_id = models.CharField(max_length=5, primary_key=True)
-
-class Stakeholder(models.Model):
-    stakeholder_id = models.CharField(max_length=5, primary_key=True)
-
-class Product(models.Model):
-    product_id = models.CharField(max_length=5, primary_key=True)   
 
 class Order(models.Model):
   order_id = models.CharField(max_length=5, primary_key=True)
-  mamamboga = models.ForeignKey(
-      Mamamboga,
+  mamamboga= models.ForeignKey(
+     "users.mamamboga",
       on_delete=models.CASCADE,
       related_name='orders'
   )
   product = models.ForeignKey(
-      Product,
+      "stock.Product",
       on_delete=models.CASCADE,
       related_name='orders'
   )
   community = models.ForeignKey(
-      Community,
+      "communities.Community",
       on_delete=models.CASCADE,
       related_name='orders'
   )
@@ -50,7 +40,7 @@ class Payment(models.Model):
    )
    amount = models.DecimalField(max_digits=10, decimal_places=2)
    receiver = models.ForeignKey(
-       Stakeholder,
+       "users.Stakeholder",
        on_delete=models.CASCADE,
        related_name='payments'
    )

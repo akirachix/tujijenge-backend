@@ -16,14 +16,13 @@ class Product(models.Model):
    def __str__(self):
        return self.product_name
 
-class Mamamboga(models.Model):
-    mamamboga_id= models.CharField(max_length=5, primary_key=True)
+
 
 class Stock(models.Model):
 
    stock_id = models.CharField(max_length=5, primary_key=True)
    mamamboga = models.ForeignKey(
-       Mamamboga,
+       "users.Mamamboga",
        on_delete=models.CASCADE,
        related_name='stocks'
    )
@@ -37,8 +36,8 @@ class Stock(models.Model):
 
 
 
-#    def __str__(self):
-#        return f"Stock {self.stock_id} for {self.mamamboga.mamamboga_name}"
+   def __str__(self):
+       return f"Stock {self.stock_id} for {self.mamamboga.mamamboga_name}"
 
 
 
