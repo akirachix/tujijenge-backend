@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'communities',
+    'payments',
+    'users',
+    'stock'
 ]
 
 MIDDLEWARE = [
@@ -76,10 +80,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'HOST':'aws-0-eu-central-1.pooler.supabase.com',
+        'HOST':'aws-0-us-east-2.pooler.supabase.com',
         'PORT' : '5432',
-    'USER':'postgres.iyrtbkgwkbfybghonauo',
-    'PASSWORD' : 'funchixkre#'
+        'USER':'postgres.creibsbzmowhdoweorps',
+        'PASSWORD' : 'funchixkre#'
     }
 }
 
