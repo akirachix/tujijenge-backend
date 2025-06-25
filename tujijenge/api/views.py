@@ -2,7 +2,9 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from users.models import Mamamboga, Stakeholder
 from payments.models import Payment, Order
-from .serializers import MamambogaSerializer, StakeholderSerializer,PaymentSerializer,OrderSerializer
+from stock.models import Product,Stock
+from communities.models import Community, CommunityMembers, TrainingSessions, TrainingRegistration
+from .serializers import MamambogaSerializer, StakeholderSerializer,PaymentSerializer,OrderSerializer,CommunitySerializer, CommunityMembersSerializer, TrainingSessionsSerializer, TrainingRegistrationSerializer, ProductSerializer, StockSerializer
 
 
 
@@ -23,3 +25,25 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset=Product.objects.all()
+    serializer_class=ProductSerializer
+
+class StockViewSet(viewsets.ModelViewSet):
+    queryset=Stock.objects.all()
+    serializer_class = StockSerializer
+  
+class CommunityViewSet(viewsets.ModelViewSet):
+    queryset = Community.objects.all()
+    serializer_class=CommunitySerializer
+    
+class CommunityMembersViewSet(viewsets.ModelViewSet):
+    queryset = CommunityMembers.objects.all()
+    serializer_class=CommunityMembersSerializer
+    
+class TrainingSessionsViewSet(viewsets.ModelViewSet):
+    queryset = TrainingSessions.objects.all()
+    serializer_class=TrainingSessionsSerializer
+    
+class TrainingRegistrationViewSet(viewsets.ModelViewSet):
+    queryset = TrainingRegistration.objects.all()
