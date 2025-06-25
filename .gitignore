@@ -2,3 +2,4 @@ tujijengeenv/
 __pycache__/
 *pyc/
 db.sqlite3
+__pycache__
