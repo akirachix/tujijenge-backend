@@ -31,7 +31,6 @@ class Product(models.Model):
 
 
 
-
 class Stock(models.Model):
 
    stock_id = models.CharField(max_length=5, primary_key=True)
@@ -40,6 +39,7 @@ class Stock(models.Model):
 #        on_delete=models.CASCADE,
 #        related_name='stocks'
 #    )
+
    price = models.DecimalField(max_digits=10, decimal_places=2)
    quantity = models.DecimalField(max_digits=10, decimal_places=2)
    last_updated = models.DateTimeField(null=True, blank=True)
