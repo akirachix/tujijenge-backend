@@ -1,6 +1,7 @@
 from django.db import models
 
 
+
 class Community(models.Model):
    
    community_id = models.CharField(max_length=5, primary_key=True)
