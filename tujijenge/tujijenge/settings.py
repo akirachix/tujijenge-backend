@@ -81,10 +81,8 @@ DATABASES = {
         'PORT' : '5432',
         'USER':'postgres.creibsbzmowhdoweorps',
         'PASSWORD' : 'funchixkre#'
-
     }
 }
-
 
 
 
