@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'communities',
-    'payments',
     'users',
     'stock',
     'stock_api',
@@ -88,6 +87,7 @@ DATABASES = {
         'PASSWORD' : 'funchixkre#'
     }
 }
+
 
 
 # Password validation
