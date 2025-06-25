@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets # type: ignore
 from .serializers import CommunitySerializer, CommunityMembersSerializer, TrainingSessionsSerializer, TrainingRegistrationSerializer
 from communities.models import Community, CommunityMembers, TrainingSessions, TrainingRegistration
 

@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers # type: ignore
 from communities.models import Community, CommunityMembers, TrainingSessions, TrainingRegistration
 
 class CommunitySerializer(serializers.ModelSerializer):
