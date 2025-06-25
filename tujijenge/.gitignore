@@ -1,0 +1,11 @@
+**/migrations/
+tujijengeenv/
+__pycache__/
+*.pyc/
+db.sqlite3
+/tujijenge/__pycache__/
+/users/__pycache__/
+/stock/__pycache__/
+/stock_api/__pycache__/
+/stock/__pycache__/
+/communities/__pycache__/
