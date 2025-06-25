@@ -11,8 +11,7 @@ router =DefaultRouter()
 router.register(r"MamaMbogas", MamambogaViewSet, basename="mamambogas")
 router.register(r"Stakeholder", StakeholderViewSet, basename="stakeholders")
 
-router.register(r"products", ProductViewSet, basename='product')
-router.register(r"stocks", StockViewSet, basename='stock')
+
 
 router.register(r"Payment", PaymentViewSet, basename="payments")
 router.register(r"Order", OrderViewSet, basename="orders")
