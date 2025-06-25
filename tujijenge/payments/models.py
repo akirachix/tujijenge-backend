@@ -17,7 +17,7 @@ class Order(models.Model):
   community = models.ForeignKey(
       "communities.Community",
       on_delete=models.CASCADE,
-      related_name='orders'
+      related_name='orders',
   )
   quantity = models.DecimalField(max_digits=10, decimal_places=2)
   total_price = models.DecimalField(max_digits=10, decimal_places=2)
