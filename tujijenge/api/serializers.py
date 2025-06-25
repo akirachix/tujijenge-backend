@@ -23,6 +23,7 @@ class StakeholderSerializer(serializers.ModelSerializer):
         model = Stakeholder
         fields ="__all__"
 
+
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
@@ -32,6 +33,7 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields ="__all__"
+
 
 
 class ProductSerializer(serializers.ModelSerializer):
