@@ -1,34 +1,32 @@
 from django.test import TestCase
-
-# Create your tests here.
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
 from django.utils import timezone
 
 from stock.models import Category, Tag, Product, Stock
-from users.models import Mamamboga 
+from users.models import Mamamboga
 
-class ProductAPITest(APITestCase):
+cclass ProductAPITest(APITestCase):
     def setUp(self):
         self.category = Category.objects.create(name="Fruits")
         self.tag = Tag.objects.create(name="Organic")
-        self.url = reverse('product-list')  
+        self.url = reverse('product-list')
 
         self.valid_data = {
             "product_id": "P001",
             "product_name": "Bananas",
             "unit": "kg",
-            "category": self.category.id,
+            "category_id": self.category.id,  # Changed from 'category'
             "product_price": "30.00",
             "description": "Sweet bananas",
-            "tags": [self.tag.id]
+            "tag_ids": [self.tag.id],  # Changed from 'tags'
         }
 
     def test_create_product(self):
         response = self.client.post(self.url, self.valid_data, format='json')
+        print(response.data)  # Debug: Remove after fixing
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
     def test_list_products(self):
         Product.objects.create(
             product_id="P002",
@@ -84,15 +82,16 @@ class ProductAPITest(APITestCase):
 class StockAPITest(APITestCase):
     def setUp(self):
         self.mamamboga = Mamamboga.objects.create(
-            mamamboga_id="M001",
-            mamamboga_name="Mama Asha",
+            id="M001",
+            first_name="Asha",
+            last_name="Mama",
             phone_number="0712345678",
             pin="1234"
         )
         self.url = reverse('stock-list')
         self.valid_data = {
             "stock_id": "S001",
-            "mamamboga": self.mamamboga.mamamboga_id,
+            "mamamboga_id": self.mamamboga.id,  # Changed from 'mamamboga'
             "price": "120.00",
             "quantity": "15.0",
             "expiration_date": timezone.now().isoformat()
@@ -100,6 +99,7 @@ class StockAPITest(APITestCase):
 
     def test_create_stock(self):
         response = self.client.post(self.url, self.valid_data, format='json')
+        print(response.data)  # Debug: Remove after fixing
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_list_stocks(self):
@@ -123,7 +123,7 @@ class StockAPITest(APITestCase):
         url = reverse('stock-detail', args=[stock.pk])
         updated_data = {
             "stock_id": "S003",
-            "mamamboga": self.mamamboga.mamamboga_id,
+            "mamamboga": self.mamamboga.id,  # Updated to id
             "price": "90.00",
             "quantity": "8.0"
         }

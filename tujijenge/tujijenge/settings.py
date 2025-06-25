@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +30,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,11 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'communities',
-    'users',
-    'stock',
-    'stock_api',
     'rest_framework',
+    'users.apps.UsersConfig',
+    'stock',  # Consider 'stock.apps.StockConfig' if applicable
+    'stock_api',  # Consider 'stock_api.apps.StockApiConfig' if applicable
 ]
 
 MIDDLEWARE = [
@@ -76,18 +75,12 @@ WSGI_APPLICATION = 'tujijenge.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'HOST':'aws-0-us-east-2.pooler.supabase.com',
-        'PORT' : '5432',
-        'USER':'postgres.creibsbzmowhdoweorps',
-        'PASSWORD' : 'funchixkre#'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

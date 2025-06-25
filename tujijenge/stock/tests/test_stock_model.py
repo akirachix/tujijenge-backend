@@ -1,4 +1,3 @@
-# tujijenge/stock/tests/test_models.py
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now as timezone_now
@@ -88,8 +87,9 @@ class ProductModelTest(TestCase):
 class StockModelTest(TestCase):
     def setUp(self):
         self.mamamboga = Mamamboga.objects.create(
-            mamamboga_id="M001",
-            mamamboga_name="Mama Asha",
+            id="M001",
+            first_name="Asha",
+            last_name="Mama",
             phone_number="0712345678",
             pin="1234"
         )
@@ -103,7 +103,7 @@ class StockModelTest(TestCase):
 
     def test_stock_str(self):
         """Test Stock string representation."""
-        self.assertEqual(str(self.stock), f"Stock S001 for Mama Asha")
+        self.assertEqual(str(self.stock), f"Stock S001 for Asha Mama")  # Updated to new __str__
 
     def test_stock_creation(self):
         """Test creating a Stock instance."""
@@ -116,9 +116,6 @@ class StockModelTest(TestCase):
         self.assertEqual(stock.price, 100.00)
         self.assertEqual(Stock.objects.count(), 2)
 
-
-
-
     def test_stock_mamamboga_relationship(self):
         """Test ForeignKey relationship with Mamamboga."""
-        self.assertEqual(self.stock.mamamboga.mamamboga_name, "Mama Asha")
+        self.assertEqual(self.stock.mamamboga.first_name, "Asha")  # Updated to first_name
