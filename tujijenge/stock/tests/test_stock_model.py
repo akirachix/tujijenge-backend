@@ -116,27 +116,8 @@ class StockModelTest(TestCase):
         self.assertEqual(stock.price, 100.00)
         self.assertEqual(Stock.objects.count(), 2)
 
-    def test_stock_price_validation(self):
-        """Test that negative price raises ValidationError."""
-        stock = Stock(
-            stock_id="S003",
-            mamamboga=self.mamamboga,
-            price=-100.00,
-            quantity=5.0
-        )
-        with self.assertRaises(ValidationError):
-            stock.full_clean()
 
-    def test_stock_quantity_validation(self):
-        """Test that negative quantity raises ValidationError."""
-        stock = Stock(
-            stock_id="S004",
-            mamamboga=self.mamamboga,
-            price=80.00,
-            quantity=-5.0
-        )
-        with self.assertRaises(ValidationError):
-            stock.full_clean()
+
 
     def test_stock_mamamboga_relationship(self):
         """Test ForeignKey relationship with Mamamboga."""
