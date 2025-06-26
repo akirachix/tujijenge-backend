@@ -3,13 +3,12 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from payments.models import Order, Payment
 from users.models import Mamamboga, Stakeholder
-from stock.models import Product, Category
+from stock.models import Product
 from communities.models import Community
 from django.utils import timezone
 
 class PaymentAPITestCase(APITestCase):
     def setUp(self):
-    
         self.mamamboga = Mamamboga.objects.create(
             id="m001",
             first_name="Akeza",
@@ -30,14 +29,12 @@ class PaymentAPITestCase(APITestCase):
             stakeholder_email="aksaloi@gmail.com",
             password_hash="Akezasaloi"
         )
-        self.category = Category.objects.create(name="Test Category")
         self.product = Product.objects.create(
             product_id="P0011",
             product_name="Test Product",
             product_price=1000.00,
             unit="kg",
-            category=self.category,
-            description="Fresh from the farm"
+            category="Vegetable"
         )
         self.community = Community.objects.create(
             community_id="C001",
@@ -85,7 +82,6 @@ class PaymentAPITestCase(APITestCase):
         url = reverse('payments-list')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
         self.assertTrue(isinstance(response.data, list) or 'results' in response.data)
 
     def test_retrieve_payment(self):
@@ -141,14 +137,12 @@ class PaymentAPITestCase(APITestCase):
 
 class OrderAPITestCase(APITestCase):
     def setUp(self):
-        self.category = Category.objects.create(name="Test Category")
         self.product = Product.objects.create(
             product_id="P0011",
             product_name="Test Product",
             product_price=1000.00,
             unit="kg",
-            category=self.category,
-            description="Fresh from the farm"
+            category="Vegetable"
         )
         self.mamamboga = Mamamboga.objects.create(
             id="m001",

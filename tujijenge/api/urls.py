@@ -5,10 +5,8 @@ from .views import  PaymentViewSet, OrderViewSet
 
 router =DefaultRouter()
 
-router.register(r"Payment", PaymentViewSet, basename="payments")
-router.register(r"Order", OrderViewSet, basename="orders")
-
-
+router.register(r"payments", PaymentViewSet, basename="payments")
+router.register(r"orders", OrderViewSet, basename="orders")
 
 
 urlpatterns = [
