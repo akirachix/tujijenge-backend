@@ -3,3 +3,7 @@ __pycache__/
 *pyc/
 db.sqlite3
 __pycache__
+
+*.pyc
+*.pyo
+*.pyd
