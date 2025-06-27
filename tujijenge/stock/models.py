@@ -5,7 +5,7 @@ from decimal import Decimal
 
 
 class Product(models.Model):
-    product_id = models.CharField(max_length=5, primary_key=True)
+    product_id = models.AutoField(primary_key=True)
     product_name = models.CharField(max_length=50)
     unit = models.CharField(max_length=10)
     category = models.CharField(max_length=20)
@@ -21,15 +21,15 @@ class Product(models.Model):
         return self.product_name
 
 class Stock(models.Model):
-    stock_id = models.CharField(max_length=5, primary_key=True)
-    # mamamboga = models.ForeignKey(
-    #     "users.Mamamboga",
-    #     on_delete=models.CASCADE,
-    #     related_name='stocks',
-    #     null=True,
-    #     blank=True,
-    #     to_field='id'
-    # )
+    stock_id = models.AutoField(primary_key=True)
+    mamamboga = models.ForeignKey(
+        "users.Mamamboga",
+        on_delete=models.CASCADE,
+        related_name='stocks',
+        null=True,
+        blank=True,
+        to_field='id'
+    )
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
     last_updated = models.DateTimeField(null=True, blank=True)

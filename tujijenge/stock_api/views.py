@@ -7,9 +7,9 @@ from .serializers import ProductSerializer, StockSerializer
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'product_id'
+   
 
 class StockViewSet(viewsets.ModelViewSet):
     queryset = Stock.objects.all()
     serializer_class = StockSerializer
-    lookup_field = 'stock_id'
+ 

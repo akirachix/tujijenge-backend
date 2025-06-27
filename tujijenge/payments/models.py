@@ -1,14 +1,15 @@
 from django.db import models
+from users.models import Stakeholder, Mamamboga
 
 
 
 class Order(models.Model):
-  order_id = models.CharField(max_length=5, primary_key=True)
-  mamamboga= models.ForeignKey(
-     "users.mamamboga",
-      on_delete=models.CASCADE,
-      related_name='orders'
-  )
+  order_id = models.AutoField(primary_key=True)
+#   mamamboga= models.ForeignKey(
+#      "users.mamamboga",
+#       on_delete=models.CASCADE,
+#       related_name='orders'
+#   )
   product = models.ForeignKey(
       "stock.Product",
       on_delete=models.CASCADE,
@@ -32,7 +33,7 @@ class Order(models.Model):
       return f"Order {self.order_id} by {self.mamamboga.mamamboga_name}"
 
 class Payment(models.Model):
-   payment_id = models.CharField(max_length=5, primary_key=True)
+   payment_id = models.AutoField( primary_key=True)
    order = models.ForeignKey(
        Order,
        on_delete=models.CASCADE,
@@ -40,9 +41,8 @@ class Payment(models.Model):
    )
    amount = models.DecimalField(max_digits=10, decimal_places=2)
    receiver = models.ForeignKey(
-       "users.Stakeholder",
-       on_delete=models.CASCADE,
-       related_name='payments'
+      Stakeholder,
+       on_delete=models.CASCADE
    )
    status = models.CharField(max_length=50)
    payment_date = models.DateTimeField(null=True, blank=True)
