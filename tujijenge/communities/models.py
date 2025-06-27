@@ -1,6 +1,7 @@
 from django.db import models
 
 
+
 class Community(models.Model):
    
    community_id = models.CharField(max_length=5, primary_key=True)
@@ -36,7 +37,7 @@ class CommunityMembers(models.Model):
 
 
    def __str__(self):
-       return f"{self.mamamboga.mamamboga_name} in {self.community.name}"
+       return f"{self.mamamboga.first_name} in {self.community.name}"
 
 
 class TrainingSessions(models.Model):
