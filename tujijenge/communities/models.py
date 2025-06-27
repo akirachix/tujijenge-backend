@@ -37,7 +37,7 @@ class CommunityMembers(models.Model):
 
 
    def __str__(self):
-       return f"{self.mamamboga.mamamboga_name} in {self.community.name}"
+       return f"{self.mamamboga.first_name} in {self.community.name}"
 
 
 class TrainingSessions(models.Model):

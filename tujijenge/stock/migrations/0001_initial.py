@@ -19,18 +19,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
             ],
         ),
-        migrations.CreateModel(
-            name='Stock',
-            fields=[
-                ('stock_id', models.CharField(max_length=5, primary_key=True, serialize=False)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('quantity', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('last_updated', models.DateTimeField(blank=True, null=True)),
-                ('expiration_date', models.DateTimeField(blank=True, null=True)),
-                ('last_sync_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-            ],
-        ),
+      
         migrations.CreateModel(
             name='Tag',
             fields=[

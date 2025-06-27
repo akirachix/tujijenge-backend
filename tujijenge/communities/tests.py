@@ -10,13 +10,13 @@ class ModelTests(TestCase):
     def setUp(self):
         self.mamamboga = Mamamboga.objects.create(
             id='M001',  
-            first_name='Mama Jane'
+            first_name='Mama Mwangi'
         )
 
         self.community = Community.objects.create(
             community_id='C001',
-            name='Test Community',
-            description='A test community',
+            name='Community A',
+            description='We are here',
             latitude=-1.2921,
             longitude=36.8219,
             created_by=self.mamamboga
@@ -33,8 +33,8 @@ class ModelTests(TestCase):
         )
 
     def test_community_creation(self):
-        self.assertEqual(self.community.name, 'Test Community')
-        self.assertEqual(str(self.community), 'Test Community')
+        self.assertEqual(self.community.name, 'Community A')
+        self.assertEqual(str(self.community), 'Community A')
         self.assertEqual(self.community.created_by, self.mamamboga)
 
     def test_community_member_creation(self):
