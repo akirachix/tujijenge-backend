@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('communities', '0002_alter_community_created_by_and_more'),
         ('payments', '0001_initial'),
-        ('stock', '0002_mamamboga_stock'),
+        # ('stock', '0002_mamamboga_stock'),
         ('users', '0001_initial'),
     ]
 
