@@ -54,9 +54,9 @@ class PaymentAPITestCase(APITestCase):
     def test_create_payment(self):
         url = reverse('payments-list')
         data = {
-            "order": self.order.pk,  # Using primary key
+            "order": self.order.pk, 
             "amount": "1500.00",
-            "receiver": self.stakeholder.pk,  # Using primary key
+            "receiver": self.stakeholder.pk, 
             "status": "pending",
             "payment_date": timezone.now().isoformat()
         }
@@ -86,7 +86,7 @@ class PaymentAPITestCase(APITestCase):
             status="completed",
             payment_date=timezone.now()
         )
-        url = reverse('payments-detail', args=[payment.pk])  # Using primary key
+        url = reverse('payments-detail', args=[payment.pk])  
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['amount'], "500.00")
@@ -99,11 +99,11 @@ class PaymentAPITestCase(APITestCase):
             status="pending",
             payment_date=timezone.now()
         )
-        url = reverse('payments-detail', args=[payment.pk])  # Using primary key
+        url = reverse('payments-detail', args=[payment.pk]) 
         data = {
-            "order": self.order.pk,  # Using primary key
+            "order": self.order.pk, 
             "amount": "700.00",
-            "receiver": self.stakeholder.pk,  # Using primary key
+            "receiver": self.stakeholder.pk, 
             "status": "completed",
             "payment_date": timezone.now().isoformat()
         }
@@ -120,10 +120,10 @@ class PaymentAPITestCase(APITestCase):
             status="completed",
             payment_date=timezone.now()
         )
-        url = reverse('payments-detail', args=[payment.pk])  # Using primary key
+        url = reverse('payments-detail', args=[payment.pk])  
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Payment.objects.filter(pk=payment.pk).exists())  # Using primary key
+        self.assertFalse(Payment.objects.filter(pk=payment.pk).exists()) 
 
 class OrderAPITestCase(APITestCase):
     def setUp(self):
@@ -164,9 +164,9 @@ class OrderAPITestCase(APITestCase):
     def test_create_order(self):
         url = reverse('orders-list')
         data = {
-            "mamamboga": self.mamamboga.pk,  # Using primary key
-            "product": self.product.pk,  # Using primary key
-            "community": self.community.pk,  # Using primary key
+            "mamamboga": self.mamamboga.pk, 
+            "product": self.product.pk, 
+            "community": self.community.pk,
             "quantity": 5,
             "total_price": "2000.00",
             "deadline_at": timezone.now().isoformat(),
@@ -184,17 +184,17 @@ class OrderAPITestCase(APITestCase):
         self.assertTrue(isinstance(response.data, list) or 'results' in response.data)
 
     def test_retrieve_order(self):
-        url = reverse('orders-detail', args=[self.order.pk])  # Using primary key
+        url = reverse('orders-detail', args=[self.order.pk]) 
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['order_id'], self.order.pk)  # Using primary key
+        self.assertEqual(response.data['order_id'], self.order.pk) 
 
     def test_update_order(self):
-        url = reverse('orders-detail', args=[self.order.pk])  # Using primary key
+        url = reverse('orders-detail', args=[self.order.pk])  
         data = {
-            "mamamboga": self.mamamboga.pk,  # Using primary key
-            "product": self.product.pk,  # Using primary key
-            "community": self.community.pk,  # Using primary key
+            "mamamboga": self.mamamboga.pk, 
+            "product": self.product.pk,
+            "community": self.community.pk, 
             "quantity": 10,
             "total_price": "3000.00",
             "deadline_at": timezone.now().isoformat(),
@@ -206,7 +206,7 @@ class OrderAPITestCase(APITestCase):
         self.assertEqual(str(self.order.total_price), "3000.00")
 
     def test_delete_order(self):
-        url = reverse('orders-detail', args=[self.order.pk])  # Using primary key
+        url = reverse('orders-detail', args=[self.order.pk]) 
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Order.objects.filter(pk=self.order.pk).exists())  # Using primary key
+        self.assertFalse(Order.objects.filter(pk=self.order.pk).exists()) 
