@@ -40,9 +40,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'comm_api',
     'communities',
+    'rest_framework',
     'payments',
     'users',
-    'stock'
+    'stock',
+    'api',
+       
 ]
 
 MIDDLEWARE = [
