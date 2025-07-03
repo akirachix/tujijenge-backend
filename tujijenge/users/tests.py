@@ -4,44 +4,38 @@ from users.models import Mamamboga, Stakeholder
 class MamambogaModelTests(TestCase):
     def setUp(self):
         self.mamamboga = Mamamboga.objects.create(
-            mamamboga_id="M001",
-            mamamboga_name="Arsema",
-            phone_number="+2579394224",
-            pin="1234",
-            latitude=10.1,
-            longitude=20.2,
-            is_active=True
+            first_name="Test",
+            last_name="User",
+            phone_number="0700000000",
+            pin="1234"
         )
 
     def test_create_mamamboga(self):
-        self.assertEqual(self.mamamboga.mamamboga_id, "M001")
-        self.assertEqual(self.mamamboga.mamamboga_name, "Arsema")
-        self.assertEqual(self.mamamboga.phone_number, "+2579394224")
+        self.assertEqual(self.mamamboga.first_name, "Test")
+        self.assertEqual(self.mamamboga.last_name, "User")
+        self.assertEqual(self.mamamboga.phone_number, "0700000000")
         self.assertEqual(self.mamamboga.pin, "1234")
-        self.assertTrue(self.mamamboga.is_active)
-        self.assertEqual(self.mamamboga.latitude, 10.1)
-        self.assertEqual(self.mamamboga.longitude, 20.2)
-
-    def test_default_certified_status(self):
-        self.assertEqual(self.mamamboga.certified_status, "Pending")
 
     def test_str_representation(self):
-        self.assertEqual(str(self.mamamboga), "Arsema")
+        self.assertEqual(str(self.mamamboga), "Test User")
+
+    def test_default_certified_status(self):
+        self.assertIsNone(self.mamamboga.certified_status)
 
 class StakeholderModelTests(TestCase):
     def setUp(self):
         self.stakeholder = Stakeholder.objects.create(
-            stakeholder_id="S001",
-            stakeholder_name="Taimba",
-            stakeholder_email="taimba@gain.com",
-            password_hash="hash1"
+            first_name="Stake",
+            last_name="Holder",
+            stakeholder_email="stake@example.com",
+            password_hash="secret"
         )
 
     def test_create_stakeholder(self):
-        self.assertEqual(self.stakeholder.stakeholder_id, "S001")
-        self.assertEqual(self.stakeholder.stakeholder_name, "Taimba")
-        self.assertEqual(self.stakeholder.stakeholder_email, "taimba@gain.com")
-        self.assertEqual(self.stakeholder.password_hash, "hash1")
+        self.assertEqual(self.stakeholder.first_name, "Stake")
+        self.assertEqual(self.stakeholder.last_name, "Holder")
+        self.assertEqual(self.stakeholder.stakeholder_email, "stake@example.com")
+        self.assertEqual(self.stakeholder.password_hash, "secret")
 
     def test_str_representation(self):
-        self.assertEqual(str(self.stakeholder), "Taimba")
+        self.assertEqual(str(self.stakeholder), "Stake Holder")
