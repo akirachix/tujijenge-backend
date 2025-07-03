@@ -2,3 +2,4 @@ tujijengeenv/
 **/__pycache__/
 db.sqlite3
 tujijenge/backup.json
+
