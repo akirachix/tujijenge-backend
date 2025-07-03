@@ -5,10 +5,15 @@ from decimal import Decimal
 
 
 class Product(models.Model):
+
+    CATEGORY_CHOICES=(
+        ('VEG','Vegetable'),
+        ('FRUIT','Fruit')
+    )
     product_id = models.AutoField(primary_key=True)
     product_name = models.CharField(max_length=50)
     unit = models.CharField(max_length=10)
-    category = models.CharField(max_length=20)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     product_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,

@@ -27,7 +27,7 @@ class ProductAPITest(APITestCase):
             "product_name": "Bananas",
             "unit": "kg",
             "product_price": "30.00",
-            "category": "Fruits"
+            "category": "VEG"
         }
 
     def test_create_product(self):
@@ -35,7 +35,7 @@ class ProductAPITest(APITestCase):
         response = self.client.post(self.url, self.valid_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['product_name'], "Bananas")
-        self.assertEqual(response.data['category'], "Fruits")
+        self.assertEqual(response.data['category'], "VEG")
 
     def test_list_products(self):
         """Test retrieving a list of products via API."""
@@ -43,7 +43,7 @@ class ProductAPITest(APITestCase):
             product_name="Pineapple",
             unit="pcs",
             product_price=50.00,
-            category="Fruits"
+            category="VEG"
         )
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -55,9 +55,9 @@ class ProductAPITest(APITestCase):
             product_name="Mango",
             unit="pcs",
             product_price=40.00,
-            category="Fruits"
+            category="VEG"
         )
-        url = reverse('product-detail', kwargs={'product_id': product.product_id})
+        url = reverse('product-detail', kwargs={'pk':product.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['product_name'], "Mango")
@@ -68,14 +68,14 @@ class ProductAPITest(APITestCase):
             product_name="Papaya",
             unit="pcs",
             product_price=60.00,
-            category="Fruits"
+            category="VEG"
         )
-        url = reverse('product-detail', kwargs={'product_id': product.product_id})
+        url = reverse('product-detail', kwargs={'pk':product.pk})
         updated_data = {
             "product_name": "Papaya (Updated)",
             "unit": "pcs",
             "product_price": "65.00",
-            "category": "Fruits"
+            "category": "VEG"
         }
         response = self.client.put(url, updated_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -87,12 +87,12 @@ class ProductAPITest(APITestCase):
             product_name="Orange",
             unit="pcs",
             product_price=20.00,
-            category="Fruits"
+            category="VEG"
         )
-        url = reverse('product-detail', kwargs={'product_id': product.product_id})
+        url = reverse('product-detail', kwargs={'pk':product.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Product.objects.filter(product_id="P005").exists())
+        self.assertFalse(Product.objects.filter(pk=product.pk).exists())
 
     def test_invalid_product_data(self):
         """Test creating a product with invalid data."""
@@ -100,7 +100,7 @@ class ProductAPITest(APITestCase):
             "product_name": "Invalid Product",
             "unit": "kg",
             "product_price": "-10.00",  # Invalid: negative
-            "category": "Fruits"
+            "category": "VEG"
         }
         response = self.client.post(self.url, bad_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -144,7 +144,7 @@ class StockAPITest(APITestCase):
             price=80.00,
             quantity=5.00
         )
-        url = reverse('stock-detail', kwargs={'stock_id': stock.stock_id})
+        url = reverse('stock-detail', kwargs={'pk':stock.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(float(response.data['price']), 80.00)
@@ -155,7 +155,7 @@ class StockAPITest(APITestCase):
             price=75.00,
             quantity=4.00
         )
-        url = reverse('stock-detail', kwargs={'stock_id': stock.stock_id})
+        url = reverse('stock-detail', kwargs={'pk':stock.pk})
         updated_data = {
             "price": "90.00",
             "quantity": "8.00"
@@ -170,7 +170,7 @@ class StockAPITest(APITestCase):
             price=70.00,
             quantity=3.00
         )
-        url = reverse('stock-detail', kwargs={'stock_id': stock.stock_id})
+        url = reverse('stock-detail', kwargs={'pk':stock.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -189,7 +189,7 @@ class ProductModelTest(TestCase):
             product_name="Bananas",
             unit="kg",
             product_price=30.00,
-            category="Fruits"
+            category="VEG"
         )
 
     def test_product_str(self):
@@ -203,7 +203,7 @@ class ProductModelTest(TestCase):
             product_name="Apples",
             unit="kg",
             product_price=40.00,
-            category="Fruits"
+            category="VEG"
         )
         self.assertEqual(product.product_name, "Apples")
         self.assertEqual(Product.objects.count(), 2)
@@ -214,20 +214,12 @@ class ProductModelTest(TestCase):
             product_name="Mangoes",
             unit="kg",
             product_price=-10.00,
-            category="Fruits"
+            category="VEG"
         )
         with self.assertRaises(ValidationError):
             product.full_clean()
 
-    def test_product_unique_product_id(self):
-        """Test that duplicate product_id raises IntegrityError."""
-        with self.assertRaises(IntegrityError):
-            Product.objects.create(
-                product_name="Duplicate Bananas",
-                unit="kg",
-                product_price=35.00,
-                category="Fruits"
-            )
+
 
 class StockModelTest(TestCase):
     def setUp(self):
