@@ -4,7 +4,7 @@ from django.db import models
 
 class Community(models.Model):
    
-   community_id = models.CharField(max_length=5, primary_key=True)
+   community_id = models.AutoField(primary_key=True)
    name = models.CharField(max_length=255)
    description = models.TextField(null=True, blank=True)
    latitude = models.FloatField(null=True, blank=True)
@@ -21,7 +21,7 @@ class Community(models.Model):
 
 class CommunityMembers(models.Model):
   
-   membership_id = models.CharField(max_length=5, primary_key=True)
+   membership_id = models.AutoField(primary_key=True)
    mamamboga = models.ForeignKey(
        "users.Mamamboga",
        on_delete=models.CASCADE,
@@ -42,7 +42,7 @@ class CommunityMembers(models.Model):
 
 class TrainingSessions(models.Model):
  
-   session_id = models.CharField(max_length=5, primary_key=True)
+   session_id = models.AutoField(primary_key=True)
    title = models.CharField(max_length=255)
    description = models.TextField(null=True, blank=True)
    start_date = models.DateTimeField(null=True, blank=True)
@@ -57,7 +57,7 @@ class TrainingSessions(models.Model):
 
 class TrainingRegistration(models.Model):
    """Represents a vendor's registration for a training session."""
-   registration_id = models.CharField(max_length=5, primary_key=True)
+   registration_id = models.AutoField(primary_key=True)
    session = models.ForeignKey(
        TrainingSessions,
        on_delete=models.CASCADE,

@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Order(models.Model):
-  order_id = models.CharField(max_length=5, primary_key=True)
+  order_id = models.AutoField( primary_key=True)
   mamamboga= models.ForeignKey(
      "users.mamamboga",
       on_delete=models.CASCADE,
@@ -32,7 +32,7 @@ class Order(models.Model):
       return f"Order {self.order_id} by {self.mamamboga.mamamboga_name}"
 
 class Payment(models.Model):
-   payment_id = models.CharField(max_length=5, primary_key=True)
+   payment_id = models.AutoField(primary_key=True)
    order = models.ForeignKey(
        Order,
        on_delete=models.CASCADE,
