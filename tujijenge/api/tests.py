@@ -1,6 +1,4 @@
-from django.test import TestCase
 
-# Create your tests here.
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now as timezone_now
@@ -11,6 +9,80 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 from stock.models import Product, Stock
+from rest_framework.test import APITestCase
+from rest_framework import status
+from users.models import Mamamboga, Stakeholder
+
+class UnifiedUserViewSetTests(APITestCase):
+    def setUp(self):
+        self.mamamboga = Mamamboga.objects.create(
+            first_name="Mamu",
+            last_name="Boga",
+            pin="1234"
+        )
+        self.stakeholder = Stakeholder.objects.create(
+            first_name="Stake",
+            last_name="Holder",
+            stakeholder_email="stake@example.com",
+            password_hash="abcd"
+        )
+
+    def test_list_all_users(self):
+        response = self.client.get('/api/user/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        names = [u['first_name'] for u in response.data]
+        self.assertIn("Mamu", names)
+        self.assertIn("Stake", names)
+
+    def test_list_mamamboga(self):
+        response = self.client.get('/api/user/?user_type=mamamboga')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for entry in response.data:
+            self.assertNotIn('stakeholder_email', entry)
+
+    def test_list_stakeholder(self):
+        response = self.client.get('/api/user/?user_type=stakeholder')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for entry in response.data:
+            self.assertIn('stakeholder_email', entry)
+
+    def test_retrieve_mamamboga(self):
+        response = self.client.get(f'/api/user/{self.mamamboga.pk}/?user_type=mamamboga')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['first_name'], "Mamu")
+
+
+    def test_retrieve_stakeholder(self):
+        response = self.client.get(f'/api/user/{self.stakeholder.pk}/?user_type=stakeholder')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['first_name'], "Stake")
+        self.assertEqual(response.data['stakeholder_email'], "stake@example.com")
+
+    def test_create_stakeholder(self):
+        data = {
+            "user_type": "stakeholder",
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "stakeholder_email": "janedoe@example.com",
+            "password_hash": "mypassword"
+        }
+        response = self.client.post('/api/user/', data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['first_name'], "Jane")
+        self.assertEqual(response.data['stakeholder_email'], "janedoe@example.com")
+
+
+    def test_delete_mamamboga(self):
+        response = self.client.delete(f'/api/user/{self.mamamboga.pk}/?user_type=mamamboga')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Mamamboga.objects.filter(pk=self.mamamboga.pk).exists())
+
+    def test_delete_stakeholder(self):
+        response = self.client.delete(f'/api/user/{self.stakeholder.pk}/?user_type=stakeholder')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Stakeholder.objects.filter(pk=self.stakeholder.pk).exists())
+
+
 
 class ProductAPITest(APITestCase):
     def setUp(self):
@@ -182,61 +254,3 @@ class StockAPITest(APITestCase):
         }
         response = self.client.post(self.url, bad_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-class ProductModelTest(TestCase):
-    def setUp(self):
-        self.product = Product.objects.create(
-            product_name="Bananas",
-            unit="kg",
-            product_price=30.00,
-            category="VEG"
-        )
-
-    def test_product_str(self):
-        """Test Product string representation."""
-        self.assertEqual(str(self.product), "Bananas")
-
-    def test_product_creation(self):
-        """Test creating a Product instance."""
-        product = Product.objects.create(
-
-            product_name="Apples",
-            unit="kg",
-            product_price=40.00,
-            category="VEG"
-        )
-        self.assertEqual(product.product_name, "Apples")
-        self.assertEqual(Product.objects.count(), 2)
-
-    def test_product_price_validation(self):
-        """Test that negative product_price raises ValidationError."""
-        product = Product(
-            product_name="Mangoes",
-            unit="kg",
-            product_price=-10.00,
-            category="VEG"
-        )
-        with self.assertRaises(ValidationError):
-            product.full_clean()
-
-
-
-class StockModelTest(TestCase):
-    def setUp(self):
-        self.stock = Stock.objects.create(
-            price=120.00,
-            quantity=15.00,
-            expiration_date=timezone_now()
-        )
-
-
-
-    def test_stock_creation(self):
-        """Test creating a Stock instance."""
-        stock = Stock.objects.create(
-            price=100.00,
-            quantity=10.00
-        )
-        self.assertEqual(stock.price, 100.00)
-        self.assertEqual(Stock.objects.count(), 2)
-

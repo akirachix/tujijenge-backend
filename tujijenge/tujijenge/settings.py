@@ -12,15 +12,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+import os
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-d!&$)$))=z5)q*_w$x2dx9kuh+=9brnqr!74llyy+123#eo7yl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -38,11 +35,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'communities',
+    'rest_framework',
     'payments',
     'users',
     'stock',
-    'stock_api',
-    'rest_framework',
+    'api',
 ]
 
 MIDDLEWARE = [
