@@ -12,7 +12,6 @@ class PaymentAPITestCase(APITestCase):
         self.mamamboga = Mamamboga.objects.create(
             first_name="Akeza",
             last_name="Saloi",
-            phone_number="+254780300748",
             pin="1234",
             latitude=36.6678,
             longitude=36.6678,
@@ -23,7 +22,6 @@ class PaymentAPITestCase(APITestCase):
         self.stakeholder = Stakeholder.objects.create(
             first_name="Saloi",
             last_name="Stake",
-            phone_number="+254780300700",
             stakeholder_email="aksaloi@gmail.com",
             password_hash="Akezasaloi"
         )
@@ -136,7 +134,6 @@ class OrderAPITestCase(APITestCase):
         self.mamamboga = Mamamboga.objects.create(
             first_name="Akeza",
             last_name="Saloi",
-            phone_number="+254780300748",
             pin="1234",
             latitude=36.6678,
             longitude=36.6678,

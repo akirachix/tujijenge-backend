@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import Stakeholder, Mamamboga
 
 class Order(models.Model):
     order_id =  models.AutoField(primary_key=True)
