@@ -1,13 +1,17 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status # type: ignore
-from .serializers import MamambogaSerializer, StakeholderSerializer,CommunitySerializer, CommunityMembersSerializer, TrainingSessionsSerializer, TrainingRegistrationSerializer,PaymentSerializer,OrderSerializer,ProductSerializer, StockSerializer
+from .serializers import MamambogaSerializer, StakeholderSerializer,CommunitySerializer, CommunityMembersSerializer, TrainingSessionsSerializer, TrainingRegistrationSerializer,OrderSerializer,ProductSerializer, StockSerializer
 from communities.models import Community, CommunityMembers, TrainingSessions, TrainingRegistration
-from payments.models import Payment, Order
+from orders.models import Order
 from stock.models import Product, Stock
 from rest_framework.response import Response
 from django.db import IntegrityError
 from users.models import Mamamboga, Stakeholder
-
+from rest_framework.views import APIView
+from .daraja import DarajaAPI
+from .serializers import STKPushSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 USER_TYPES = {
     'mamamboga': (Mamamboga, MamambogaSerializer),
@@ -112,10 +116,6 @@ class UnifiedUserViewSet(viewsets.ViewSet):
                 return Response({'status': 'deleted'}, status=204)
             except Exception:
                 return Response({'error': 'Not found'}, status=404)
-class PaymentViewSet(viewsets.ModelViewSet):
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
-
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
@@ -147,3 +147,26 @@ class StockViewSet(viewsets.ModelViewSet):
     queryset = Stock.objects.all()
     serializer_class = StockSerializer
  
+
+class STKPushView(APIView):
+   def post(self, request):
+       serializer = STKPushSerializer(data=request.data)
+       if serializer.is_valid():
+           data = serializer.validated_data
+           daraja = DarajaAPI()
+           response = daraja.stk_push(
+               phone_number=data['phone_number'],
+               amount=data['amount'],
+               account_reference=data['account_reference'],
+               transaction_desc=data['transaction_desc']
+           )
+           return Response(response)
+       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(['POST'])
+def daraja_callback(request):
+   print("Daraja Callback Data:", request.data)
+   return Response({"ResultCode": 0, "ResultDesc": "Accepted"})
