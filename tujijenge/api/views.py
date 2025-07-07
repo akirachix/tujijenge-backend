@@ -157,6 +157,7 @@ class STKPushView(APIView):
            response = daraja.stk_push(
                phone_number=data['phone_number'],
                amount=data['amount'],
+               cart_item=data['cart_item'],
                account_reference=data['account_reference'],
                transaction_desc=data['transaction_desc']
            )

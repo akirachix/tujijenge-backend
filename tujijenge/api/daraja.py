@@ -15,7 +15,7 @@ class DarajaAPI:
        url = f"{self.base_url}/oauth/v1/generate?grant_type=client_credentials"
        response = requests.get(url, auth=HTTPBasicAuth(self.consumer_key, self.consumer_secret))
        return response.json()['access_token']
-   def stk_push(self, phone_number, amount, account_reference, transaction_desc):
+   def stk_push(self, phone_number, amount,cart_item, account_reference, transaction_desc):
        access_token = self.get_access_token()
        timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
        password = base64.b64encode(f"{self.business_shortcode}{self.passkey}{timestamp}".encode()).decode()

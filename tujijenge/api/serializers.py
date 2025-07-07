@@ -59,5 +59,6 @@ class StockSerializer(serializers.ModelSerializer):
 class STKPushSerializer(serializers.Serializer):
    phone_number = serializers.CharField()
    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+   cart_item = serializers.ListField()
    account_reference = serializers.CharField()
    transaction_desc = serializers.CharField()
