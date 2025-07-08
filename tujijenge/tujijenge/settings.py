@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'communities',
     'rest_framework',
-    'payments',
+    'orders',
     'users',
     'stock',
     'api',
@@ -120,3 +120,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+DARAJA_CONSUMER_KEY = 'JaWY37MoYGBkZrMuwwOzIG19vv8QG3KsnDjUAy8I4coWwgrL'
+DARAJA_CONSUMER_SECRET = 'ZlLDLGmiJwivJtyrRXu5wGQhQ30Ua8D4k3Z2xdGQ7DG6UqjvdAbNePWHTyGlNMWK'
+DARAJA_SHORTCODE = '174379'
+DARAJA_PASSKEY = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
+DARAJA_CALLBACK_URL = 'https://d9b0-197-232-143-191.ngrok-free.app/api/daraja-callback/'

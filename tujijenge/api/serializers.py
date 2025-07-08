@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from payments.models import Order
-from payments.models import Payment
+from orders.models import Order
 from stock.models import  Product, Stock
 from communities.models import Community, CommunityMembers, TrainingSessions, TrainingRegistration
 from users.models import Mamamboga, Stakeholder
@@ -41,13 +40,6 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields ="__all__"
 
-class PaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payment
-        fields ="__all__"
-
-
-
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -63,3 +55,10 @@ class StockSerializer(serializers.ModelSerializer):
         if data.get('quantity') is not None and data['quantity'] < 0:
             raise serializers.ValidationError({"quantity": "Quantity cannot be negative."})
         return data
+
+class STKPushSerializer(serializers.Serializer):
+   phone_number = serializers.CharField()
+   amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+   cart_item = serializers.ListField()
+   account_reference = serializers.CharField()
+   transaction_desc = serializers.CharField()
