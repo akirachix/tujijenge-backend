@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets, status # type: ignore
+from rest_framework import viewsets, status 
 from .serializers import MamambogaSerializer, StakeholderSerializer,CommunitySerializer, CommunityMembersSerializer, TrainingSessionsSerializer, TrainingRegistrationSerializer,OrderSerializer,ProductSerializer, StockSerializer
 from communities.models import Community, CommunityMembers, TrainingSessions, TrainingRegistration
 from orders.models import Order
@@ -12,6 +12,7 @@ from .daraja import DarajaAPI
 from .serializers import STKPushSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.http import JsonResponse
 
 USER_TYPES = {
     'mamamboga': (Mamamboga, MamambogaSerializer),
