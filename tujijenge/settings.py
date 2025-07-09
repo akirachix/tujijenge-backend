@@ -77,11 +77,13 @@ WSGI_APPLICATION = 'tujijenge.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 DATABASES = {
+
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': config('DB_NAME', default=BASE_DIR / 'db.sqlite3'),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -132,13 +134,12 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-DARAJA_CONSUMER_KEY = 'JaWY37MoYGBkZrMuwwOzIG19vv8QG3KsnDjUAy8I4coWwgrL'
-DARAJA_CONSUMER_SECRET = 'ZlLDLGmiJwivJtyrRXu5wGQhQ30Ua8D4k3Z2xdGQ7DG6UqjvdAbNePWHTyGlNMWK'
-DARAJA_SHORTCODE = '174379'
-DARAJA_PASSKEY = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
-DARAJA_CALLBACK_URL = 'https://d9b0-197-232-143-191.ngrok-free.app/api/daraja-callback/'
-
-
+# Daraja (M-Pesa) settings
+DARAJA_CONSUMER_KEY = config('DARAJA_CONSUMER_KEY')
+DARAJA_CONSUMER_SECRET = config('DARAJA_CONSUMER_SECRET')
+DARAJA_SHORTCODE = config('DARAJA_SHORTCODE')
+DARAJA_PASSKEY = config('DARAJA_PASSKEY')
+DARAJA_CALLBACK_URL = config('DARAJA_CALLBACK_URL')
 
 
 FCM_NOTIFICATION_APIKEY = os.getenv("FCM_NOTIFICATION_APIKEY", default="")
