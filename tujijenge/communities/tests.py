@@ -33,6 +33,7 @@ class ModelTests(TestCase):
             is_cancelled=False,
             updated_at=None
         )
+
         self.training_registration = TrainingRegistration.objects.create(
             registration_id='R001',
             session=self.training_session,
@@ -54,20 +55,47 @@ class ModelTests(TestCase):
         self.assertEqual(self.community.created_by, self.mamamboga)
 
     def test_community_member_creation(self):
+
         self.assertEqual(self.community_member.mamamboga, self.mamamboga)
         self.assertEqual(self.community_member.community, self.community)
         self.assertIn('in', str(self.community_member))
 
     def test_training_session_creation(self):
+
+        member = CommunityMembers.objects.create(
+            membership_id='CM001',
+            mamamboga=self.mamamboga,
+            community=self.community,
+            joined_date=timezone.now()
+        )
+        self.assertEqual(member.mamamboga, self.mamamboga)
+        self.assertEqual(member.community, self.community)
+        self.assertIn('in', str(member))
+
+    def test_trainingsession_creation(self):
+
         self.assertEqual(self.training_session.title, 'Food Safety')
         self.assertEqual(str(self.training_session), 'Food Safety')
         self.assertFalse(self.training_session.is_cancelled)
 
     def test_training_registration(self):
+
         self.assertEqual(self.training_registration.session, self.training_session)
         self.assertEqual(self.training_registration.community, self.community)
         self.assertEqual(self.training_registration.mamamboga, self.mamamboga)
-        self.assertIn('Registration', str(self.training_registration))
+
+        registration = TrainingRegistration.objects.create(
+            registration_id='R001',
+            session=self.training_session,
+            community=self.community,
+            mamamboga=self.mamamboga,
+            registration_date=timezone.now()
+        )
+        self.assertEqual(registration.session, self.training_session)
+        self.assertEqual(registration.community, self.community)
+        self.assertEqual(registration.mamamboga, self.mamamboga)
+        self.assertIn('Registration', str(registration))
+
 
     def test_nullable_fields(self):
         community = Community.objects.create(
@@ -167,10 +195,4 @@ class ModelTests(TestCase):
         
             
         
-        
-        
-        
-        
-        
-        
-        
+ 

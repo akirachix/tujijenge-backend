@@ -8,10 +8,11 @@ class Product(models.Model):
         ('VEG','Vegetable'),
         ('FRUIT','Fruit')
     )
+
     product_id = models.AutoField(primary_key=True)
     product_name = models.CharField(max_length=50)
     unit = models.CharField(max_length=10)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=20)
     product_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -22,7 +23,8 @@ class Product(models.Model):
         return self.product_name
     
 class Stock(models.Model):
-    stock_id = models.AutoField( primary_key=True)
+
+    stock_id = models.AutoField(primary_key=True)
     mamamboga = models.ForeignKey(
         "users.Mamamboga",
         on_delete=models.CASCADE,
@@ -31,6 +33,7 @@ class Stock(models.Model):
         blank=True,
         to_field='id'
     )
+
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
     last_updated = models.DateTimeField(null=True, blank=True)
@@ -40,8 +43,6 @@ class Stock(models.Model):
     
     # def __str__(self):
     #     return f"Stock {self.stock_id} for {f'{self.mamamboga.first_name} {self.mamamboga.last_name or ''}'.strip() if self.mamamboga else 'No Mamamboga'}"
-
-
 
 
 
