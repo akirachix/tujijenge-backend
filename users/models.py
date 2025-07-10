@@ -12,6 +12,7 @@ class Mamamboga(models.Model):
     pin = models.CharField(max_length=4)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     deactivation_date = models.DateTimeField(null=True, blank=True)
     certified_status = models.CharField(max_length=15, null=True, blank=True)
