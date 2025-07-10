@@ -1,1 +1,1 @@
-web: gunicorn tujijenge.wsgi -log-file -
+web: gunicorn tujijenge.wsgi --log-file -
