@@ -11,20 +11,20 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
-load_dotenv()
-BASE_DIR = Path(__file__).resolve().parent.parent
+import dj_database_url  
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-SECRET_KEY = 'SECRET_KEY'
+SECRET_KEY = 'SECRET_KEY' # Make sure to change this for production and keep it secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = [*]
+ALLOWED_HOSTS = ['*'] # Be more specific in production, e.g., ['yourdomain.com', 'www.yourdomain.com']
 
 
 # Application definition
@@ -55,7 +55,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'tujijenge.urls'
 
-TEMPLATES = 
+TEMPLATES =  [ # Note: You had an extra comma making this a tuple with one dict. Should be a list of dicts.
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -67,7 +67,8 @@ TEMPLATES =
                 'django.contrib.messages.context_processors.messages',
             ],
         },
-    },
+    } # Removed trailing comma here if TEMPLATES is a list with one entry
+]
 
 
 WSGI_APPLICATION = 'tujijenge.wsgi.application'
@@ -75,14 +76,21 @@ WSGI_APPLICATION = 'tujijenge.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DATABASES = {"default": dj_database_url.config(default=os.getenv("DATABASE_URL"))}
-if not os.getenv("DATABASE_URL"):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+
+# Default to SQLite if DATABASE_URL is not set
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
+}
+
+# Override with DATABASE_URL if it is set
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    DATABASES["default"] = dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -118,6 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+# STATIC_ROOT = BASE_DIR / 'staticfiles' # Often needed for `collectstatic` in production
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
