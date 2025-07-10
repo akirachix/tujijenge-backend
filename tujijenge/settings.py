@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
-import dj_database_url  
+from dotenv import load_dotenv
+import dj_database_url
 
+load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -24,7 +26,7 @@ SECRET_KEY = 'SECRET_KEY' # Make sure to change this for production and keep it 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*'] # Be more specific in production, e.g., ['yourdomain.com', 'www.yourdomain.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -55,7 +57,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'tujijenge.urls'
 
-TEMPLATES =  [ # Note: You had an extra comma making this a tuple with one dict. Should be a list of dicts.
+TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -67,8 +69,7 @@ TEMPLATES =  [ # Note: You had an extra comma making this a tuple with one dict.
                 'django.contrib.messages.context_processors.messages',
             ],
         },
-    } # Removed trailing comma here if TEMPLATES is a list with one entry
-]
+    },]
 
 
 WSGI_APPLICATION = 'tujijenge.wsgi.application'
