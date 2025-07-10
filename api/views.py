@@ -13,11 +13,39 @@ from .serializers import STKPushSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
+from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
+import logging
+import requests
+from django.shortcuts import get_object_or_404
+
+from rest_framework.decorators import action
+
+
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371000
+    leng = math.radians(lat1)
+    leng2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+
+    a = math.sin(delta_phi / 2) ** 2 + \
+        math.cos(leng) * math.cos(leng2) * math.sin(delta_lambda / 2) ** 2
+
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    meters = R * c
+    return meters
+    
+
 
 USER_TYPES = {
     'mamamboga': (Mamamboga, MamambogaSerializer),
     'stakeholder': (Stakeholder, StakeholderSerializer),
 }
+geolocator = Nominatim(user_agent="tujijenge_backend")
+logger = logging.getLogger(__name__)
+
 
 class UnifiedUserViewSet(viewsets.ViewSet):
     def get_model_and_serializer(self, user_type):
@@ -117,6 +145,50 @@ class UnifiedUserViewSet(viewsets.ViewSet):
                 return Response({'status': 'deleted'}, status=204)
             except Exception:
                 return Response({'error': 'Not found'}, status=404)
+
+    @action(detail=False, methods=['post'], url_path='update-location')
+    def update_location(self, request):
+        user_id = request.data.get('id')
+        latitude = request.data.get('latitude')
+        longitude = request.data.get('longitude')
+
+        if not (user_id and latitude and longitude):
+            return Response({'error': 'id, latitude and longitude required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        mamamboga = get_object_or_404(Mamamboga, id=user_id)
+        mamamboga.latitude = float(latitude)
+        mamamboga.longitude = float(longitude)
+        geolocator = Nominatim(user_agent="tujijenge")
+        try:
+            location = geolocator.reverse((latitude, longitude), language="en")
+            mamamboga.address = location.address if location and location.address else ''
+        except Exception as e:
+            mamamboga.address = ''
+        
+        mamamboga.save()
+        return Response({'status': 'success', 'address': mamamboga.address}, status=status.HTTP_200_OK)        
+
+    @action(detail=False, methods=['get'], url_path='communities-nearby')
+    def communities_nearby(self, request):
+
+        latitude = request.query_params.get('latitude')
+        longitude = request.query_params.get('longitude')
+        if not latitude or not longitude:
+            return Response({'error': 'latitude and longitude are required'}, status=400)
+        latitude = float(latitude)
+        longitude = float(longitude)
+        radius = 1000
+        nearby = []
+        for community in Community.objects.exclude(latitude__isnull=True, longitude__isnull=True):
+            if community.latitude is not None and community.longitude is not None:
+                distance = haversine(latitude, longitude, community.latitude, community.longitude)
+                if distance <= radius:
+                    nearby.append(CommunitySerializer(community).data)
+        
+        return Response(nearby)   
+
+
+
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
