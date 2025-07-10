@@ -1,0 +1,1 @@
+web: gunicorn tujijenge.wsgi -log-file -
