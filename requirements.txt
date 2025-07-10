@@ -8,9 +8,12 @@ dotenv==0.9.9
 gunicorn==23.0.0
 idna==3.10
 packaging==25.0
+pip==25.1.1
+psycopg==3.2.9
+psycopg-binary==3.2.9
+python-decouple==3.8
 python-dotenv==1.1.1
 requests==2.32.4
 sqlparse==0.5.3
 urllib3==2.5.0
 whitenoise==6.9.0
-
