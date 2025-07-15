@@ -14,11 +14,13 @@ class Product(models.Model):
     product_name = models.CharField(max_length=50)
     unit = models.CharField(max_length=10)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    description=models.TextField(blank=True,null=True)
     product_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'), message="Price must be positive")]
     )
+    image=models.ImageField(upload_to='product_images/',blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
