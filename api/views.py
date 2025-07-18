@@ -297,7 +297,7 @@ class CommunityMembersViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return [IsAuthenticated(), IsMamamboga()]
         elif self.action in ['list', 'retrieve']:
-            return [IsAuthenticated(), (IsMamamboga() | IsStakeholder())]
+            return [IsAuthenticated(), IsMamamboga(), IsStakeholder()]
         return super().get_permissions()
 
 
