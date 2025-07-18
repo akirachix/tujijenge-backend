@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status 
-from .serializers import MamambogaSerializer, StakeholderSerializer,CommunitySerializer, CommunityMembersSerializer, TrainingSessionsSerializer, TrainingRegistrationSerializer,OrderSerializer,ProductSerializer, StockSerializer
+from .serializers import MamambogaSerializer, StakeholderSerializer,CommunitySerializer, CommunityMembersSerializer, TrainingSessionsSerializer, TrainingRegistrationSerializer,OrderSerializer,ProductSerializer, StockSerializer, CartItemSerializer, CartSerializer
 from communities.models import Community, CommunityMembers, TrainingSessions, TrainingRegistration
 from orders.models import Order
+from cart.models import Cart, CartItem
 from stock.models import Product, Stock
-from rest_framework.response import Response
 from django.db import IntegrityError
 from users.models import Mamamboga, Stakeholder
 from rest_framework.views import APIView
 from .daraja import DarajaAPI
 from .serializers import STKPushSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from django.http import JsonResponse
 from geopy.geocoders import Nominatim
@@ -18,9 +18,12 @@ from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 import logging
 import requests
 from django.shortcuts import get_object_or_404
-
-from rest_framework.decorators import action
-
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+import math
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import TokenAuthentication
+from users.permissions import IsMamamboga, IsStakeholder, IsStakeholderRole
 
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371000
@@ -44,14 +47,41 @@ USER_TYPES = {
     'stakeholder': (Stakeholder, StakeholderSerializer),
 }
 geolocator = Nominatim(user_agent="tujijenge_backend")
-logger = logging.getLogger(__name__)
 
 
 class UnifiedUserViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated] 
+
+
+    def get_permissions(self):
+        if self.action in ['create', 'login', 'register']:
+            return [AllowAny()]
+        return super().get_permissions()
+
+
     def get_model_and_serializer(self, user_type):
         if user_type not in USER_TYPES:
             raise ValueError("Invalid user_type")
         return USER_TYPES[user_type]
+
+    def create(self, request):
+        user_type = request.data.get('user_type')
+    
+        if not user_type:
+            return Response({'error': 'user_type is required'}, status=400)
+    
+        try:
+            Model, Serializer = self.get_model_and_serializer(user_type)
+    
+        except ValueError as e:
+            return Response({'error': str(e)}, status=400)
+        serializer = Serializer(data=request.data)
+        if serializer.is_valid():
+            instance = serializer.save()
+            token, _ = Token.objects.get_or_create(user=instance.user)
+            return Response({'user': serializer.data, 'token': token.key}, status=201)
+        return Response(serializer.errors, status=400)
+
 
     def list(self, request):
         user_type = request.query_params.get('user_type')
@@ -88,22 +118,8 @@ class UnifiedUserViewSet(viewsets.ViewSet):
             except Exception:
                 return Response({'error': 'Not found'}, status=404)
 
-    def create(self, request):
-        user_type = request.data.get('user_type')
-        if not user_type:
-            return Response({'error': 'user_type is required'}, status=400)
-        try:
-            Model, Serializer = self.get_model_and_serializer(user_type)
-        except ValueError:
-            return Response({'error': 'Invalid user_type'}, status=400)
-        serializer = Serializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                instance = serializer.save()
-                return Response(Serializer(instance).data, status=status.HTTP_201_CREATED)
-            except IntegrityError as e:
-                return Response({'error': str(e)}, status=400)
-        return Response(serializer.errors, status=400)
+
+
 
     def update(self, request, pk=None):
         user_type = request.data.get('user_type')
@@ -185,40 +201,186 @@ class UnifiedUserViewSet(viewsets.ViewSet):
                 if distance <= radius:
                     nearby.append(CommunitySerializer(community).data)
         
-        return Response(nearby)   
+        return Response(nearby)
+
+
+    @action(detail=False, methods=['post'], url_path='register', permission_classes=[AllowAny])
+    def register(self, request):
+        return self.create(request)
+
+    @action(detail=False, methods=['post'], url_path='login', permission_classes=[AllowAny])
+    def login(self, request):
+        user_type = request.data.get('user_type')
+        if not user_type:
+            return Response({'error': 'user_type is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if user_type == 'mamamboga':
+            phone_number = request.data.get('phone_number')
+            pin = request.data.get('pin')
+            if not phone_number or not pin:
+                return Response({'error': 'phone_number and pin are required'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                mamamboga = Mamamboga.objects.get(phone_number=phone_number)
+                user = authenticate(request, username=mamamboga.user.username, password=pin)
 
 
 
+                if user:
+                    token, _ = Token.objects.get_or_create(user=user)
+                    return Response({'token': token.key})
+                else:
+                    return Response({'error': 'Invalid PIN'}, status=401)
+
+            except Mamamboga.DoesNotExist:
+                return Response({'error': 'Mamamboga not found'}, status=404)
+
+        elif user_type == 'stakeholder':
+            email = request.data.get('stakeholder_email')
+            password = request.data.get('password_hash')
+            role = request.data.get('role')
+            if not (email and  password):
+                return Response({'error': 'stakeholder_email, role and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                stakeholder = Stakeholder.objects.get(stakeholder_email=email)
+                user = authenticate(request, username=stakeholder.user.username, password=password)
+
+                if user:
+                    token, _ = Token.objects.get_or_create(user=user)
+                    return Response({'token': token.key, 'user': StakeholderSerializer(stakeholder).data})
+                else:
+                    return Response({'error': 'Invalid credentials'}, status=401)
+            except Stakeholder.DoesNotExist:
+                return Response({'error': 'Stakeholder not found'}, status=404)
+
+        else:
+            return Response({'error': 'Invalid user_type'}, status=400)
+    
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated(), IsMamamboga()]
+        elif self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return super().get_permissions()
+
+
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'mamamboga'):
+            return Order.objects.filter(mamamboga=user.mamamboga)
+        stakeholder = getattr(user, 'stakeholder', None)
+        if stakeholder and stakeholder.role == 'Supplier':
+            return Order.objects.all()
+        return Order.objects.none()
+
+
 class CommunityViewSet(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class=CommunitySerializer
     
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated(), IsMamamboga()]
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return super().get_permissions()
+
 class CommunityMembersViewSet(viewsets.ModelViewSet):
     queryset = CommunityMembers.objects.all()
-    serializer_class=CommunityMembersSerializer
-    
+    serializer_class = CommunityMembersSerializer
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated(), IsMamamboga()]
+        elif self.action in ['list', 'retrieve']:
+            return [IsAuthenticated(), (IsMamamboga() | IsStakeholder())]
+        return super().get_permissions()
+
+
 class TrainingSessionsViewSet(viewsets.ModelViewSet):
     queryset = TrainingSessions.objects.all()
     serializer_class=TrainingSessionsSerializer
-    
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsStakeholderRole('Trainer')]
+        elif self.action in ['list', 'retrieve']:
+            return [IsAuthenticated(), IsMamamboga(), IsStakeholderRole('Trainer')]
+        return super().get_permissions()
+   
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all() 
+    serializer_class = CartSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsMamamboga()]
+        elif self.action in ['list', 'retrieve']:
+            return [IsAuthenticated(), IsMamamboga()]  
+        return super().get_permissions()
+
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'mamamboga'):
+            return Cart.objects.filter(user=user.mamamboga)
+        return Cart.objects.none()
+
+
+class CartItemViewSet(viewsets.ModelViewSet):
+    queryset = CartItem.objects.all() 
+    serializer_class = CartItemSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsMamamboga()]
+        elif self.action in ['list', 'retrieve']:
+            return [IsAuthenticated(), IsMamamboga()]  
+        return super().get_permissions()
+
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'mamamboga'):
+            return CartItem.objects.filter(cart__user=user.mamamboga)
+        return CartItem.objects.none()
+
+  
 class TrainingRegistrationViewSet(viewsets.ModelViewSet):
     queryset = TrainingRegistration.objects.all()
-    serializer_class=TrainingRegistrationSerializer
+    serializer_class = TrainingRegistrationSerializer
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated(), IsMamamboga()]
+        elif self.action in ['list', 'retrieve']:
+            return [IsAuthenticated(), IsStakeholderRole('Trainer')]
+        return super().get_permissions()
+
+
     
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsStakeholderRole('Supplier')]
+        elif self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return super().get_permissions()
+
    
 
 class StockViewSet(viewsets.ModelViewSet):
     queryset = Stock.objects.all()
     serializer_class = StockSerializer
+    def get_permissions(self):
+        return [IsAuthenticated(), IsMamamboga()]
+
  
 
 class STKPushView(APIView):
