@@ -245,8 +245,14 @@ class UnifiedUserViewSet(viewsets.ViewSet):
         else:
             return Response({'error': 'Invalid user_type'}, status=400)
     
-
-
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    def logout(self, request):
+        try:
+            token = Token.objects.get(user=request.user)
+            token.delete()
+            return Response({"success": "Logged out successfully"}, status=status.HTTP_200_OK)
+        except Token.DoesNotExist:
+            return Response({"error": "Token not found"}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         user_type = request.query_params.get('user_type') or request.data.get('user_type')
@@ -489,7 +495,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
         cart = Cart.objects.filter(mamamboga=mamamboga).first()
         if not cart:
             cart = Cart.objects.create(mamamboga=mamamboga)
-            
+
         product = serializer.validated_data['product']
         quantity = serializer.validated_data['quantity']
         cart_item = CartItem.objects.filter(cart=cart, product=product).first()

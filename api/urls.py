@@ -22,6 +22,7 @@ router.register(r'cart-items', CartItemViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path('login/', obtain_auth_token, name='login'),
+    path('logout/', obtain_auth_token, name='logout'),
     path('daraja/stk-push/', STKPushView.as_view(), name='daraja-stk-push'),
     path('daraja/callback/', daraja_callback, name='daraja-callback'),
 ]
