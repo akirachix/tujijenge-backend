@@ -242,7 +242,7 @@ class UnifiedUserViewSet(viewsets.ViewSet):
                     role = stakeholder.role
                 except Stakeholder.DoesNotExist:
                     role = None
-                return Response({'token': token.key, 'role': role})
+                return Response({'token': token.key, 'role': role, 'user': stakeholder_data})
             else:
                 return Response({'error': 'Invalid email or password'}, status=401)
 
