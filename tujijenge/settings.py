@@ -164,5 +164,3 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     "content-type",
     "authorization",
 ]
-
-
