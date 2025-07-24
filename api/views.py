@@ -47,6 +47,7 @@ USER_TYPES = {
     'mamamboga': (Mamamboga, MamambogaSerializer),
     'stakeholder': (Stakeholder, StakeholderSerializer),
 }
+
 geolocator = Nominatim(user_agent="tujijenge_backend")
 logger = logging.getLogger(__name__)
 
@@ -61,14 +62,11 @@ from users.permissions import IsMamamboga, IsStakeholder, StakeholderRolePermiss
 class UnifiedUserViewSet(viewsets.ViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated] 
-
-
     def get_permissions(self):
         if self.action in ['create', 'login', 'register']:
             return [AllowAny()]
-        return super().get_permissions()
         
-        if self.action in ['list', 'retrive']:
+        elif self.action in ['list', 'retrieve']:
             return [IsAuthenticated()]
         return super().get_permissions()
 
@@ -168,7 +166,7 @@ class UnifiedUserViewSet(viewsets.ViewSet):
                 role=role,
             )
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=201)
+            return Response({'token': token.key, 'user': user}, status=201)
         else:
             return Response({'error': 'Invalid user_type'}, status=400)
 
@@ -236,9 +234,15 @@ class UnifiedUserViewSet(viewsets.ViewSet):
                 return Response({'error': 'stakeholder_email and password are required'}, status=400)
 
             user = authenticate(username=stakeholder_email, password=password)
+            
             if user:
                 token, _ = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key})
+                try:
+                    stakeholder = Stakeholder.objects.get(user=user)
+                    role = stakeholder.role
+                except Stakeholder.DoesNotExist:
+                    role = None
+                return Response({'token': token.key, 'role': role})
             else:
                 return Response({'error': 'Invalid email or password'}, status=401)
 
