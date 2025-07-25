@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class Mamamboga(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null= True, blank=True)
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -27,7 +27,7 @@ class Stakeholder(models.Model):
         ('Trainer','trainer'),
         ('Supplier','supplier')
     )
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null= True, blank=True)
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
