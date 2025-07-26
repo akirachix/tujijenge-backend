@@ -2,7 +2,10 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from decimal import Decimal
 
+
+
 class Product(models.Model):
+
     CATEGORY_CHOICES=(
         ('VEG','Vegetable'),
         ('FRUIT','Fruit')
@@ -17,8 +20,9 @@ class Product(models.Model):
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'), message="Price must be positive")]
     )
-    image=models.URLField(max_length=500, blank=True, null=True)  # changed from ImageField
+    image=models.ImageField(upload_to='product_images/',blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return self.product_name
