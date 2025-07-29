@@ -44,6 +44,8 @@ class TrainingSessions(models.Model):
  
    session_id = models.AutoField(primary_key=True)
    title = models.CharField(max_length=255)
+   location = models.TextField(null = True, blank = True)
+
    description = models.TextField(null=True, blank=True)
    start_date = models.DateTimeField(null=True, blank=True)
    end_date = models.DateTimeField(null=True, blank=True)
