@@ -44,8 +44,6 @@ class TrainingSessions(models.Model):
  
    session_id = models.AutoField(primary_key=True)
    title = models.CharField(max_length=255)
-   location = models.TextField(null = True, blank = True)
-
    description = models.TextField(null=True, blank=True)
    location = models.CharField(max_length=255, null=True, blank=True)
    registered = models.IntegerField(null=True)
@@ -53,6 +51,7 @@ class TrainingSessions(models.Model):
    end_date = models.DateTimeField(null=True, blank=True)
    is_cancelled = models.BooleanField(default=False)
    updated_at = models.DateTimeField(null=True, blank=True)
+
 
 
    def __str__(self):
