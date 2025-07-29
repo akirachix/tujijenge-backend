@@ -47,6 +47,8 @@ class TrainingSessions(models.Model):
    location = models.TextField(null = True, blank = True)
 
    description = models.TextField(null=True, blank=True)
+   location = models.CharField(max_length=255, null=True, blank=True)
+   registered = models.IntegerField(null=True)
    start_date = models.DateTimeField(null=True, blank=True)
    end_date = models.DateTimeField(null=True, blank=True)
    is_cancelled = models.BooleanField(default=False)
