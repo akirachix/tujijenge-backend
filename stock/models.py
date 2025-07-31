@@ -17,7 +17,9 @@ class Product(models.Model):
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'), message="Price must be positive")]
     )
-    image=models.URLField(max_length=500, blank=True, null=True)  # changed from ImageField
+
+    image=models.URLField(max_length=500, blank=True, null=True)  
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
