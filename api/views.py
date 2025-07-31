@@ -166,7 +166,8 @@ class UnifiedUserViewSet(viewsets.ViewSet):
                 role=role,
             )
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key, 'user': user}, status=201)
+            user_serializer = StakeholderSerializer(user)
+            return Response({'token': token.key, 'user': StakeholderSerializer.data}, status=201)
         else:
             return Response({'error': 'Invalid user_type'}, status=400)
 
@@ -240,9 +241,11 @@ class UnifiedUserViewSet(viewsets.ViewSet):
                 try:
                     stakeholder = Stakeholder.objects.get(user=user)
                     role = stakeholder.role
+                    stakeholder_data = StakeholderSerializer(stakeholder).data
                 except Stakeholder.DoesNotExist:
                     role = None
-                return Response({'token': token.key, 'role': role})
+                    stakeholder_data = None
+                return Response({'token': token.key, 'role': role, 'user': stakeholder_data})
             else:
                 return Response({'error': 'Invalid email or password'}, status=401)
 
